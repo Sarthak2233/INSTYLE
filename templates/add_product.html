@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Add Merchandise</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+{% if 'user_id' not in session %}
+    {% set redirect_url = url_for('add_product') %}
+    <script>
+        window.location.href = "{{ redirect_url }}";
+    </script>
+{% endif %}
+<body>
+    {% include 'navbar.html' %}
+   <div class="container mt-5">
+       <h2>Add Merchandise</h2>
+       <form method="post" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
+           <div class="form-group">
+               <label for="name">Produt Code:</label>
+               <input type="text" class="form-control" id="pc" name="pc" required>
+           </div>
+           <div class="form-group">
+               <label for="name">Name:</label>
+               <input type="text" class="form-control" id="name" name="name" required>
+           </div>
+           <div class="form-group">
+               <label for="name">Size:</label>
+               <input type="text" class="form-control" id="size" name="size" required>
+           </div>
+           <div class="form-group">
+               <label for="description">Description:</label>
+               <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+           </div>
+
+           <div class="form-group">
+               <label for="price">Price:</label>
+               <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+           </div>
+
+           <div class="form-group">
+               <label for="image">Image:</label>
+               <input type="file" class="form-control-file" id="image" name="image">
+           </div>
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select><br>
+
+           <button type="submit" class="btn btn-primary">Add</button>
+       </form>
+       <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Merchandise</a>
+   </div>
+
+</body>
+</html>

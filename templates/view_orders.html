@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container mt-5">
+        <h2 align="center">All Orders</h2>
+        <form class="form-inline mb-3" method="GET" action="{{ url_for('search_orders') }}">
+            <label for="search_date" class="mr-sm-2">Search by Date:</label>
+            <input type="date" class="form-control mr-sm-2" id="search_date" name="search_date">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        {% for order_info in orders %}
+            <h3>{{ order_info['date'] }}</h3>
+            <h4>Total Price for {{ order_info['customer'] }}: Rs{{ order_info['total_price'] }}</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Delivery Location</th>
+                        <th>Phonenumber</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Purchase Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in order_info['orders'] %}
+                        <tr>
+                            <td>{{ order['delivery_location'] }}</td>
+                            <td>{{order['phonenumber'] }}</td>
+                            <td>{{ order['merchandise_name'] }}</td>
+                            <td>Rs {{ order['price'] }}</td>
+                            <td>{{ order['quantity'] }}</td>
+                            <td>{{ order['timestamp'] }}</td>
+                            <td>
+                                <a href="#">Edit</a>
+                                <form action="#" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this order?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
+</body>
+</html>

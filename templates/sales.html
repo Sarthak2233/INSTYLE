@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sales-container {
+            margin-top: 50px;
+        }
+        .sales-chart {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container sales-container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="mb-4">Sales Chart</h2>
+                <canvas id="salesChart" class="sales-chart"></canvas>
+                <canvas id="salesChart1" class="sales-chart"></canvas><br><br><br>
+            </div>
+            <div class="col-md-6">
+                <h2 class="mb-4">Sales</h2>
+                <form id="dateRangeForm">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate">
+                    <button type="button" onclick="fetchData()">Fetch Data</button>
+                </form>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Username</th>
+                            <th>Quantity</th>
+                            <th>PhoneNumber</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesTableBody">
+                        <!-- Sales data will be inserted here -->
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Function to render today's sales chart
+        function renderTodaySales(salesData) {
+            // Clear previous table data
+            document.getElementById('salesTableBody').innerHTML = '';
+
+            // Populate table with new data
+            salesData.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.timestamp}</td>
+                    <td>${sale.price}</td>
+                    <td>${sale.username}</td>
+                    <td>${sale.quantity}</td>
+                    <td>${sale.phonenumber}</td>
+                `;
+                document.getElementById('salesTableBody').appendChild(row);
+            });
+
+
+            // Generate chart data
+            const chartData = {
+                labels: salesData.map(sale => sale.timestamp),
+                datasets: [{
+                    label: 'Sales Amount',
+                    data: salesData.map(sale => sale.price * sale.quantity),
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(130, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            // Get canvas element
+            const ctx = document.getElementById('salesChart').getContext('2d');
+
+            // Create new chart instance
+            const salesChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        // Ensure that the function is called after the DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Call the function to render today's sales chart
+            renderTodaySales({{ sales_data | tojson }});
+        });
+
+        // Function to fetch data from the server and render the chart
+        function fetchData() {
+            let startDate = document.getElementById('startDate').value;
+            let endDate = document.getElementById('endDate').value;
+            fetch('/sales', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ start_date: startDate, end_date: endDate })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous table data
+                document.getElementById('salesTableBody').innerHTML = '';
+
+                // Populate table with new data
+                data.forEach(sale => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${sale.timestamp}</td>
+                        <td>${sale.price}</td>
+                        <td>${sale.username}</td>
+                        <td>${sale.quantity}</td>
+                        <td>${sale.phonenumber}</td>
+                    `;
+                    document.getElementById('salesTableBody').appendChild(row);
+                });
+
+                // Get canvas element
+                const ctx = document.getElementById('salesChart1').getContext('2d');
+
+
+
+                // Generate chart data
+                const chartData = {
+                    labels: data.map(sale => sale.timestamp),
+                    datasets: [{
+                        label: 'Sales Amount',
+                        data: data.map(sale => sale.price * sale.quantity),
+                        backgroundColor: 'rgba(135, 206, 235, 1)',
+                        borderColor: 'rgba(34,139, 34, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                // Destroy existing chart instance if it exists
+                console.log(window.salesChart1)
+                if (window.salesChart1 && window.salesChart1.destroy) {
+                        window.salesChart1.destroy();
+                    }
+                console.log(window.salesChart1)
+                // Create new chart instance
+                window.salesChart1 = new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>

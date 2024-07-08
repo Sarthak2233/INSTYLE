@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+  <style>
+    /* General body styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4; /* Light grey background */
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Styling the form container */
+    .form-container {
+        background-color: white;
+        width: 100%;
+        max-width: 500px;
+        margin: 30px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Form header styles */
+    .form-header {
+        background-color: #4CAF50; /* Green background */
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    /* Input and button styling */
+    input[type="text"], input[type="submit"] {
+        width: calc(100% - 40px); /* Full width minus padding */
+        margin: 10px 20px;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd; /* Light grey border */
+        box-sizing: border-box; /* Includes padding and border in width */
+    }
+
+    input[type="submit"] {
+        background-color: #4CAF50; /* Green background */
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049; /* Darker green */
+    }
+
+    /* Add other styles as needed */
+</style>
+
+</head>
+<body>
+<div class="form-container">
+    <div class="form-header">
+        <h3>Pay with eSewa</h3>
+        <h4>Your remaining payment: {{total_bill}}</h4>
+    </div>
+    <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+            <h4>Enter the amount you want to pay:</h4>
+            Amount:<input type="text" id="amount" name="amount" value="{{amount}}">
+            <input type="text" id="tax_amount" name="tax_amount" value="0">
+            Total Amount:<input type="text"  id='total_amount' name="total_amount" value="{{ amount }}">
+            <input type="text" id="transaction_uuid" name="transaction_uuid" value="{{ transaction_uuid}}" required>
+            <input type="text" id="product_code" name="product_code" value ="EPAYTEST" required>
+            <input type="text" id="product_service_charge" name="product_service_charge" value="0" required>
+            <input type="text" id="product_delivery_charge" name="product_delivery_charge" value="0" required>
+            <input type="text" id="success_url" name="success_url" value="https://esewa.com.np" required>
+            <input type="text" id="failure_url" name="failure_url" value="https://google.com" required>
+            <input type="text" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
+            <input type="text" id="signature" name="signature"  value="{{signature}}" required>
+            <input type="submit" value="Pay with eSewa">
+    </form>
+</div>
+
+</body>
+</html>

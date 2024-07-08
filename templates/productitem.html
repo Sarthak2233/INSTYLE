@@ -1,0 +1,112 @@
+{% if bought_product_id and bought_product_id.isdigit() %}
+    <div class="alert alert-success" role="alert">
+        Your order for {{ selected_product.name }} has been successfully placed!
+    </div>
+{% endif %}
+
+<div class="row">
+    {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if product.image_path %}
+                    <a href="{{ url_for('show_product', product_id=product.id) }}"><img src="{{ product.image_path }}" class="card-img-top" alt="Product Image"></a>
+                {% else %}
+                    <div class="no-image-placeholder"></div>
+                {% endif %}
+                <form action="{{ url_for('place_order') }}" method="post">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="hidden" name="price" value="{{ product.price }}">
+                    <label for="number">Quantity:</label>
+                    <input type="number" class="form-control" id="number" name="quantity" required>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text">Rs {{ product.price }}</p>
+                        <p class="card-text">Size: {{ product.size }}</p>
+                        <div class="form-group">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="price" value="{{ product.price }}">
+                            <button type="submit" class="btn btn-primary mt-3">Buy Now</button>
+                        </div>
+                    </div>
+                </form>
+                {% if bought_product_id and bought_product_id.isdigit() %}
+                    {% if message %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message[0][1] }}<br>
+                            <a href="{{url_for('my_orders')}}"><button type="submit" class="btn btn-dark"> MYORDERS</button></a>
+                        </div>
+
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Function to store scroll position before page reloads
+    function storeScrollPosition() {
+        localStorage.setItem('scrollPosition', window.scrollY);
+    }
+
+    $(document).ready(function() {
+        // Check if there's a stored scroll position
+        let storedScrollPosition = localStorage.getItem('scrollPosition');
+        if (storedScrollPosition) {
+            // Scroll to the stored position
+            window.scrollTo(0, storedScrollPosition);
+            // Clear the stored position
+            localStorage.removeItem('scrollPosition');
+        }
+    });
+
+    // Listen for page reload or navigation away from the page
+    window.addEventListener('beforeunload', function(event) {
+        // Store the scroll position before the page reloads
+        storeScrollPosition();
+    });
+
+    $(document).ready(function() {
+        let productId = parseInt("{{ product_id }}");
+        let boughtProductId = parseInt("{{ bought_product_id }}");
+
+        console.log("Product ID:", productId);
+        console.log("Bought Product ID:", boughtProductId);
+
+        let productElement = document.getElementById(`${productId}`);
+        if (productElement) {
+            console.log(`Element with ID ${productId} exists.`);
+        } else {
+            console.log(`Element with ID ${productId} does not exist.`);
+        }
+
+        // Check if the element with ID bought_product_${boughtProductId} exists
+        let boughtProductElement = document.getElementById(`${boughtProductId}`);
+        if (boughtProductElement) {
+            console.log(`Element with ID ${boughtProductId} exists.`);
+        } else {
+            console.log(`Element with ID ${boughtProductId} does not exist.`);
+        }
+
+        // Scrolling to product
+        let element = document.getElementById(`product_${productId}`);
+        if (element) {
+            console.log("Scrolling to product:", productId);
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Scrolling to bought product
+        let boughtElement = document.getElementById(`bought_product_${boughtProductId}`);
+        if (boughtElement) {
+            console.log("Scrolling to bought product:", boughtProductId);
+            boughtElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    // Preventing user from going back
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function(event) {
+        window.history.pushState(null, null, window.location.href);
+    };
+</script>

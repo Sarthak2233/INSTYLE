@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Existing CSS styles remain the same */
+        .container {
+            max-width: 800px;s
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            margin: 0;
+        }
+        .bill-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bill-details {
+            margin-bottom: 20px;
+        }
+        .bill-items {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .bill-items th, .bill-items td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .bill-items th {
+            background-color: #f2f2f2;
+        }
+        .bill-total {
+            margin-top: 20px;
+            text-align: right;
+        }
+        /* Additional CSS styles for corporate look */
+        .corporate-header {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .corporate-header img {
+            display: block;
+            margin: 0 auto;
+            width: 100px; /* Adjust as needed */
+            height: auto;
+        }
+
+        .corporate-header h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .corporate-details {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+        }
+
+        .corporate-details p {
+            margin: 5px 0;
+        }
+
+        .corporate-items th, .corporate-items td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .corporate-items th {
+            background-color: #f8f9fa;
+        }
+
+        .corporate-total {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .note {
+            font-style: italic;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+      <div class="b-example-divider shadow-sm"></div>
+
+      <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+          <div class="col-md-3 mb-2 mb-md-0">
+            <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+              <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+            </a>
+            <img class="img-fluid mt-4 mb-4" src="static/logo.jpg" width="124" height="124"/>
+          </div>
+
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{{url_for('home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+            {% if user and user.isAdmin %}
+              <li><a href="{{url_for('sales')}}" class="nav-link px-2">Sales</a></li>
+              <li><a href="{{ url_for('view_orders') }}" class="nav-link px-2">View Orders</a></li>
+            {% else %}
+              <li><a href="{{url_for('my_orders')}}" class="nav-link px-2">My Orders</a></li>
+              <li><a href="{{ url_for('purchase_history') }}" class="nav-link px-2">Transactions</a></li>
+            {% endif %}
+
+            <li><a href="#" class="nav-link px-2">FAQs</a></li>
+            <li><a href="#" class="nav-link px-2">About</a></li>
+          </ul>
+
+          <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('login')}}">LOGIN</a></button>
+            <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('logout') }}">Logout</a></button>
+          </div>
+        </header>
+      </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Corporate Header -->
+        <div class="corporate-header">
+            <img class="img-fluid" src="static/logo.jpg" alt="Logo">
+            <h1>In Style</h1>
+        </div>
+
+        <!-- Bill Details -->
+        <div class="corporate-details">
+            <h3>Customer Details:</h3>
+            <p><strong>Name:</strong> {{ sale.username }}</p>
+            <p><strong>Phone Number:</strong> {{ sale.phonenumber }}</p>
+            <p><strong>Delivery Location:</strong> {{ sale.delivery_location }}</p>
+            <p><strong>Date:</strong> {{ sale.timestamp }}</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Bill Items Table -->
+                <table class="corporate-items">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.quantity }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                Pay your credit by clicking here!!.
+                <a href="{{ url_for('esewa_prepare_payment') }}" class="nav-link px-2">Esewa</a>
+                <a href="{{ url_for('khalti_prepare_payment') }}" class="nav-link px-2">Khalti</a>
+            </div>
+        </div>
+
+
+        <!-- Bill Total -->
+        <div class="corporate-total">
+            <h3>Total: {{ total_bill }}</h3>
+        </div>
+
+        <!-- Save Bill Button -->
+        <div class="text-center">
+            <form action="{{ url_for('save_bill_image') }}" method="post">
+                <!-- Input fields here -->
+                <input type="hidden" name="username" value="{{ sale.username }}">
+                <input type="hidden" name="phonenumber" value="{{ sale.phonenumber }}">
+                <input type="hidden" name="delivery_location" value="{{ sale.delivery_location }}">
+                <input type="hidden" name="timestamp" value="{{ sale.timestamp }}">
+                <input type="hidden" name="total_bill" value="{{ total_bill }}">
+
+                {% for item in items %}
+                    <input type="hidden" name="products[]" value="{{ item.product.name }}">
+                    <input type="hidden" name="prices[]" value="{{ item.price }}">
+                    <input type="hidden" name="quantities[]" value="{{ item.quantity }}">
+                {% endfor %}
+                    <button type="submit" class="btn btn-primary">Save Bill as Image</button>
+            </form>
+        </div>
+        <div class="note">
+            <p>Please save the bill.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    // JavaScript for corporate styling
+    $(document).ready(function() {
+        // Add corporate styling to header
+        $('.bill-header').addClass('corporate-header');
+        $('.bill-header h1').addClass('corporate-title');
+
+        // Add corporate styling to details section
+        $('.bill-details').addClass('corporate-details');
+
+        // Add corporate styling to items table
+        $('.bill-items').addClass('corporate-items');
+
+        // Add corporate styling to total section
+        $('.bill-total').addClass('corporate-total');
+    });
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1
+        /crypto-js.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1
+        /hmac-sha256.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1
+        /enc-base64.min.js"></script>
+
+         var hash = CryptoJS.HmacSHA256("Message", "secret");
+         var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+         document.write(hashInBase64);
+
+</script>

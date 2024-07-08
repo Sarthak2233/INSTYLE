@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase History</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        /* Add custom CSS styles for the purchase history */
+        /* Customize as needed */
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .purchase-history-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .purchase-history-table th, .purchase-history-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .purchase-history-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        #backToTopBtn {
+            display: block;
+            position: fixed;
+            bottom: 20px; /* Adjust as needed */
+            right: 20px; /* Adjust as needed */
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        #backToTopBtn:hover {
+            transform: translateY(-5px); /* Adjust as needed */
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <h2 class="text-center mt-4 mb-4">Purchase History</h2>
+        <div class="purchase-history-container">
+            <table class="table purchase-history-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Username</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Delivery Location</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Use JavaScript to dynamically populate the table with purchase history data -->
+                </tbody>
+            </table>
+        </div>
+        <button id="backToTopBtn" onclick="scrollToTop()">Back to Top</button>
+    </div>
+
+    <script>
+
+        // Function to scroll to top of the page
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    // Function to toggle visibility of the back to top button based on scroll position
+        window.addEventListener('scroll', function() {
+            const backToTopBtn = document.getElementById('backToTopBtn');
+            if (window.scrollY > 300) {
+                // Show the button when the user scrolls down 300px
+                backToTopBtn.style.display = 'block';
+            } else {
+                // Hide the button when the user scrolls back up
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        // JavaScript to populate the purchase history table with data
+        document.addEventListener('DOMContentLoaded', function() {
+            const purchaseHistoryData = JSON.parse('{{ purchase_history|tojson|safe }}');
+            const tbody = document.querySelector('.purchase-history-table tbody');
+
+            purchaseHistoryData.forEach(function(item) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.product_name}</td>
+                    <td>${item.username}</td>
+                    <td>Rs ${item.price}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.delivery_location}</td>
+                    <td>${item.timestamp}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>

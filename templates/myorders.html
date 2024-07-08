@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <h1>My Orders</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.product.name }}</td>
+                    <td>Rs. {{ order.price }}</td>
+                    <td>{{ order.quantity}}</td>
+                    <td>
+                        <form action="{{ url_for('cancel_order') }}" method="post">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <button type="submit" class="btn btn-danger">Cancel Order</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Checkout Form -->
+        <form id="checkoutForm" action="{{ url_for('checkout') }}" method="post">
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <input type="hidden" name="delivery_location" id="delivery_location">
+            <input type="hidden" name="phonenumber" id="phonenumber">
+            <div class="form-group">
+                <label for="delivery_location">Delivery Location:</label>
+                <input type="text" class="form-control" id="delivery_location_input" required>
+                <label for="phonenumber">Phone Number:</label>
+                <input type="text" class="form-control" id="phonenumber_input" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Checkout</button>
+        </form>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        // Calculate total price of all items
+        var totalPrice = 0;
+        {% for order in orders %}
+        totalPrice += {{ order.price }} * {{ order.quantity }};
+        {% endfor %}
+        // Update total price in the form
+        $('#checkoutForm').append('<input type="hidden" name="totalPrice" value="' + totalPrice + '">');
+    });
+
+    $(document).ready(function() {
+        // When the form is submitted, set the values of delivery_location and phonenumber fields
+        $('#checkoutForm').submit(function(event) {
+            event.preventDefault();  // Prevent default form submission
+            var deliveryLocation = $('#delivery_location_input').val();
+            var phoneNumber = $('#phonenumber_input').val();
+            $('#delivery_location').val(deliveryLocation);
+            $('#phonenumber').val(phoneNumber);
+            // Submit the form
+            this.submit();
+        });
+    });
+    </script>
+</body>
+</html>

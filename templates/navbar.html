@@ -1,0 +1,110 @@
+<style>
+  .dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+</style>
+
+<div class="b-example-divider shadow-sm"></div>
+
+  <div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+      <div class="col-md-3 mb-2 mb-md-0">
+        <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+          <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+        </a>
+        <img class="img-fluid mt-4 mb-4" src="static/logo.jpg" width="124" height="124"/>
+      </div>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{{url_for('home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+        {% if user and user.isAdmin %}
+          <li><a href="{{url_for('sales')}}" class="nav-link px-2">Sales</a></li>
+          <li><a href="{{ url_for('view_orders') }}" class="nav-link px-2">View Orders</a></li>
+        {% else %}
+          <li><a href="{{url_for('my_orders')}}" class="nav-link px-2">My Orders</a></li>
+          <li><a href="{{ url_for('purchase_history') }}" class="nav-link px-2">Transactions</a></li>
+        {% endif %}
+        <!-- Category Dropdown Menu -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Categories
+                </a>
+                <ul id="categoryDropdown" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <!-- Categories will be populated dynamically -->
+                </ul>
+            </li>
+        <li><a href="#" class="nav-link px-2">FAQs</a></li>
+        <li><a href="#" class="nav-link px-2">About</a></li>
+      </ul>
+
+      <div class="col-md-3 text-end">
+        <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('login')}}">LOGIN</a></button>
+        <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('signup') }}">Sign-up</a></button>
+        <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('logout') }}">Logout</a></button>
+      </div>
+    </header>
+  </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var categoryDropdown = document.getElementById('categoryDropdown');
+        var categoryLink = document.getElementById('navbarDropdown');
+
+        // Add event listener to the category link
+        categoryLink.addEventListener('click', function(event) {
+            // Prevent default action of link
+            event.preventDefault();
+
+            // Toggle the dropdown menu
+            if (categoryDropdown.classList.contains('show')) {
+                categoryDropdown.classList.remove('show');
+            } else {
+                categoryDropdown.classList.add('show');
+            }
+
+            // Make AJAX request to fetch categories from server
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/fetch_categories', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse JSON response
+                    var categories = JSON.parse(xhr.responseText);
+
+                    // Clear existing dropdown items
+                    categoryDropdown.innerHTML = '';
+
+                    // Populate dropdown with fetched categories
+                    categories.forEach(function(category) {
+                        var listItem = document.createElement('li');
+                        var link = document.createElement('a');
+                        link.setAttribute('class', 'dropdown-item');
+                        link.setAttribute('href', '#'); // Set href to '#' for now
+                        link.textContent = category.name;
+
+                        // Add event listener to category link
+                        link.addEventListener('click', function(event) {
+                            // Prevent default action of link
+                            event.preventDefault();
+
+                            // Replace '#' with actual URL when handling the click event
+                            window.location.href = '/category/' + category.id;
+                        });
+
+                        listItem.appendChild(link);
+                        categoryDropdown.appendChild(listItem);
+                    });
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>
+

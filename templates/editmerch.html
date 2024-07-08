@@ -1,0 +1,46 @@
+<!-- edit_product.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Edit Product</h2>
+        <form method="post" action="{{ url_for('edit_product', item_id=product.id) }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="product_code">Product Code:</label>
+                <input type="text" class="form-control" id="product_code" name="name" value="{{ product.product_code }}" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required>{{ product.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" required>
+            </div>
+            <div class="form-group">
+                <label for="new_image">Current Image:</label><br>
+                <img src="{{ product.image_path }}" alt="Current Image" style="max-width: 200px;"><br>
+                <label for="new_image">Choose New Image:</label>
+                <input type="file" class="form-control-file" id="new_image" name="new_image">
+            </div>
+            <label for="category">Category:</label>
+            <select class="form-control" id="category" name="category">
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if product.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select><br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container mt-5">
+        <h2>Orders</h2>
+        <form class="form-inline mb-3" method="GET" action="{{ url_for('search_orders') }}">
+            <label for="search_date" class="mr-sm-2">Search by Date:</label>
+            <input type="date" class="form-control mr-sm-2" id="search_date" name="search_date">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+            <h3>{{ date }}</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Delivery Location</th>
+                        <th>Phonenumber</th>
+                        <th>Username</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Product Code</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.delivery_location }}</td>
+                            <td>{{ order.phonenumber }}</td>
+                            <td>{{ order.username }}</td>
+                            <td>${{ order.price }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.product_code }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Add Merchandise</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+{% if 'user_id' not in session %}
+    {% set redirect_url = url_for('add_product') %}
+    <script>
+        window.location.href = "{{ redirect_url }}";
+    </script>
+{% endif %}
+<body>
+    {% include 'navbar.html' %}
+   <div class="container mt-5">
+       <h2 align="center">Add User</h2>
+       <form method="post" action="{{ url_for('add_user') }}" enctype="multipart/form-data">
+           <div class="form-group">
+               <label for="email">Email:</label>
+               <input type="text" class="form-control" id="email" name="email" required>
+           </div>
+           <div class="form-group">
+               <label for="password">Password:</label>
+               <input type="text" class="form-control" id="password" name="password" required>
+           </div>
+           <div class="form-group">
+               <label for="username">Username:</label>
+               <input type="text" class="form-control" id="username" name="username" required>
+           </div>
+           <div class="form-group">
+               <label for="isAdmin">IsAdmin:</label>
+               <input type="text" class="form-control" id="isAdmin" name="isAdmin" required></input>
+           </div>
+           <div class="form-group">
+               <label for="payment">Payment:</label>
+               <input type="text" class="form-control" id="payment" name="payment" required></input>
+           </div>
+           <button type="submit" class="btn btn-primary">Add</button>
+       </form>
+       <a href="{{ url_for('list_users') }}" class="btn btn-secondary mt-3">Back to User</a>
+   </div>
+
+</body>
+</html>
