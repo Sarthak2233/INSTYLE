@@ -4,6 +4,8 @@ import hmac
 import uuid
 import sys
 from datetime import datetime
+
+from dotenv import load_dotenv
 # Route to generate the bill and save the image
 from flask import request, render_template_string, send_file
 from PIL import Image, ImageDraw, ImageFont
@@ -27,12 +29,12 @@ import os
 UPLOAD_FOLDER = 'static/uploads/'  # Define the path to the uploads folder
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 print(os.environ.get('FLASK_APP'))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:admin12345@localhost/mywebapp'
-#'mysql://root:admin12345@localhost/mywebapp'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('database_info')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
