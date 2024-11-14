@@ -172,10 +172,28 @@ def add_user():
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit_user(user_id):
     # Retrieve the user with the specified ID
-    user = User.query.get_or_404(user_id)
+    if 'user_id' not in session:
+        redirect(url_for('login'))
+    else:
+        user = User.query.get(user_id)
+        if not user:
+            return 'User NotFound'
+        if request.method =='POST':
+            user.email = request.form['email']
+            user.password = request.form['password']
+            user.username = request.form['username']
+            user.isAdmin = request.form['isAdmin']
+            user.payment = request.form['payment']
+
+            db.session.commit()
+
+            return redirect(url_for('list_users'))
+
+
+
     # Handle form submission for editing user details
     # Update user details in the database
-    return render_template('edit_user.html', user=user)
+        return render_template('edit_user.html', user=user)
 
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
 def delete_user(user_id):

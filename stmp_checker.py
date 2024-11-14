@@ -17,11 +17,12 @@ def send_email(subject, body, recipient, sender_email, sender_password):
     server.quit()
 
 # Replace these with your actual email and password
-sender_email = "sarakbasner6@gmail.com"
-sender_password = "yfpk mije noxz ttuf"
+sender_email = "sarakbasnet6@gmail.com"
+sender_password = "sarakbasnet6!@#"
 
 subject = "Test Subject"
 body = "This is a test email."
 recipient = "sarthak.basnet5@gmail.com"
 
 send_email(subject, body, recipient, sender_email, sender_password)
+

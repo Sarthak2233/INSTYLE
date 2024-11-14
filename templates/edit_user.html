@@ -1,10 +1,38 @@
+<!-- edit_product.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-
+    <div class="container mt-5">
+        <h2>Edit Product</h2>
+        <form method="post" action="{{ url_for('edit_user', user_id=user.id) }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="email">User Email:</label>
+                <input type="text" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="text" class="form-control" id="password" name="password" value="{{ user.password }}" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Password:</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="isAdmin">IsAdmin:</label>
+                <input type="text" class="form-control" id="isAdmin" name="isAdmin" value="{{ user.isAdmin }}" required>
+            </div>
+            <div class="form-group">
+                <label for="payment">Payment</label>
+                <input type="text" class="form-control" id="payment" name="payment" value="{{ user.payment }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
